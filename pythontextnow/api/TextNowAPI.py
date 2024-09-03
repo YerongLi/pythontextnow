@@ -64,7 +64,7 @@ class TextNowAPI:
         )
         response.raise_for_status()
 
-    @enforce_cooldown
+    # @enforce_cooldown
     def get_messages(
         self,
         conversation_phone_number: str,
@@ -101,14 +101,14 @@ class TextNowAPI:
         url_with_params = f"{base_url}?{urllib.parse.urlencode(params)}"
         def countdown(seconds):
             while seconds > 0:
-                print(f"Time remaining: {seconds} seconds")
+                # print(f"Time remaining: {seconds} seconds")
                 time.sleep(1)
                 seconds -= 1
-            print("Time's up!")
+            # print("Time's up!")
 
         # Perform a 10-second countdown
-        countdown(10)
-        print(url_with_params)
+        countdown(5)
+        # print(url_with_params)
         response = requests.get(
             url_with_params,
             headers=self.__client_config.headers,
@@ -117,17 +117,9 @@ class TextNowAPI:
         response.raise_for_status()
 
         message_dicts = response.json()["messages"]
-        print(len(message_dicts))
-        for item in [[x['contact_value'], x['message']] for x in message_dicts]:
-            print(item)
-        exit()
-        print(bbb)
         all_messages = list()
         # sort into Text and MultiMedia messages
         for message_dict in message_dicts:
-            # print(' ==== message dict === ')
-            # print(message_dicts)
-            print(message_dict['contact_value'])
             message_type = MessageType.from_value(message_dict["message_type"])
             if message_type == MessageType.TEXT:
                 all_messages.append(TextMessage.from_dict(message_dict))
